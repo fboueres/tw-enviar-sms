@@ -1,25 +1,22 @@
-let validationButton = document.getElementById('validation-button');
-let celNumber = document.getElementById('celnumber');
-let validationCodeContainer = document.getElementById('validation-code-container');
-var csrfToken = document.querySelector('input[name="_token"]').value;
+let celNumber = $('#celnumber');
+const validationButton = $('#validation-button');
+const validationCodeContainer = $('validation-code-container');
 
-validationButton.addEventListener('click', (event) => {
+validationButton.on('click', (event) => {
     event.preventDefault();
 
-    let url = `/send-sms/${celNumber.value}`;
-
-    fetch(url,
-        {
-            headers: {
-                "X-CSRF-TOKEN": csrfToken
-            },
-            method: 'post'
-        })
-        .then((response) => {
-            if (response.ok) {
-                alert('O código foi enviado com sucesso!');
-
-                validationCodeContainer.classList.remove('d-none');
-            }
-        });
+    $.ajax({
+        url: `/send-sms/${celNumber.val()}`,
+        method: 'POST',
+        headers: {
+            "X-CSRF-TOKEN": $('input[name="_token"]').val(),
+        },
+        success: (response) => {
+            console.log(response);
+        },
+        error: function (xhr, status, error) {
+            console.error('Error:', error);
+            console.log('error');
+        }
+    });
 });
